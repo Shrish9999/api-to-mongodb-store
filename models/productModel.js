@@ -11,5 +11,4 @@ const productSchema = new mongoose.Schema({
     stock: Number
 });
 
-// "Product" naam ka model export kar rahe hain jo 'products' collection se judega
 module.exports = mongoose.model('Product', productSchema);
