@@ -1,6 +1,5 @@
 const Product = require('../models/productModel');
 
-// 1. Saare products get karna
 exports.getAllProducts = async (req, res) => {
     try {
         const allProducts = await Product.find(); 
@@ -10,12 +9,12 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-// 2. Naya Product Add karna (Multer support)
+
 exports.addProduct = async (req, res) => {
     try {
         const productData = { ...req.body };
         
-        // Agar image upload hui hai toh uska local URL banao
+        
         if (req.file) {
             productData.thumbnail = `http://localhost:5000/uploads/${req.file.filename}`;
         }
@@ -28,12 +27,12 @@ exports.addProduct = async (req, res) => {
     }
 };
 
-// 3. Product Update karna (Multer support)
+
 exports.updateProduct = async (req, res) => {
     try {
         const updateData = { ...req.body };
 
-        // Agar nayi image upload ki hai toh path update karo
+        
         if (req.file) {
             updateData.thumbnail = `http://localhost:5000/uploads/${req.file.filename}`;
         }
@@ -45,7 +44,7 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// 4. Product Delete karna
+
 exports.deleteProduct = async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
