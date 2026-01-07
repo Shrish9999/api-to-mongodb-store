@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     // roles: 'user', 'manager', 'superadmin'
     role: { type: String, default: 'user' }, 
-    isBlocked: { type: Boolean, default: false } // User ko block karne ke liye
+    isBlocked: { type: Boolean, default: false } 
 });
 
 module.exports = mongoose.model('User', userSchema);
