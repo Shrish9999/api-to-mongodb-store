@@ -5,12 +5,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-
 const uploadDir = 'uploads/';
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
-
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -23,8 +21,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// --- PRODUCT ROUTES ---
 router.get('/products', productController.getAllProducts);
 
+// --- DASHBOARD STATS ROUTE (NEW ADDED) ---
+// Isse /api/stats par access kiya jayega
+router.get('/stats', productController.getDashboardStats); 
 
 router.post('/products', upload.single('thumbnail'), productController.addProduct); 
 router.put('/products/:id', upload.single('thumbnail'), productController.updateProduct);

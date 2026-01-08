@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
-const authController = require('./controllers/authController'); // Controller import kiya
+const authController = require('./controllers/authController');
 
 const app = express();
 app.use(cors());
@@ -17,10 +17,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/shopDB')
     .catch(err => console.error(err));
 
 // Routes
-app.use('/api', productRoutes);
+app.use('/api', productRoutes); // Yahan se /api/stats ka raasta khulega
 app.use('/api/auth', authRoutes);
 
-// --- ADMIN API ENDPOINTS ---
+// ADMIN API
 app.get('/api/admin/users', authController.getAllUsers);
 app.put('/api/admin/block/:id', authController.toggleBlockUser);
 app.delete('/api/admin/user/:id', authController.deleteUser);
