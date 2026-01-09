@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     // roles: 'user', 'manager', 'superadmin'
     role: { type: String, default: 'user' }, 
-    isBlocked: { type: Boolean, default: false } 
+    isBlocked: { type: Boolean, default: false },
+
+    // --- Naya Add Kiya (Password Reset ke liye) ---
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
 });
 
 module.exports = mongoose.model('User', userSchema);
