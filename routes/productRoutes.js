@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+// --- Multer Setup (Image Upload ke liye) ---
 const uploadDir = 'uploads/';
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
@@ -21,13 +22,25 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// --- PRODUCT ROUTES ---
+// ==========================================
+// NEW ROUTE: DATA MIGRATION (Seed)
+// ==========================================
+// Sabse pehle isse hit karna hai: http://localhost:5000/api/products/seed
+router.get('/products/seed', productController.seedProducts);
+
+
+// ==========================================
+// EXISTING ROUTES
+// ==========================================
+
+// 1. Get All Products
 router.get('/products', productController.getAllProducts);
 
-// --- DASHBOARD STATS ROUTE (NEW ADDED) ---
+// 2. Dashboard Stats
 // Isse /api/stats par access kiya jayega
 router.get('/stats', productController.getDashboardStats); 
 
+// 3. Add, Update, Delete Operations
 router.post('/products', upload.single('thumbnail'), productController.addProduct); 
 router.put('/products/:id', upload.single('thumbnail'), productController.updateProduct);
 router.delete('/products/:id', productController.deleteProduct);

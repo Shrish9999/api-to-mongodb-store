@@ -68,6 +68,33 @@ try {
     console.error("⚠️ Warning: Auth Routes missing");
 }
 
+// OFFER ROUTES
+try {
+    const offerRoutes = require('./routes/offerRoutes');
+    app.use('/api/offers', offerRoutes);
+    console.log("✅ Offer Routes Loaded");
+} catch (error) {
+    console.error("⚠️ Warning: Offer Routes missing");
+}
+
+// CAROUSEL ROUTES
+try {
+    const carouselRoutes = require('./routes/carouselRoutes');
+    app.use('/api/carousel', carouselRoutes);
+    console.log("✅ Carousel Routes Loaded");
+} catch (error) {
+    console.error("⚠️ Warning: Carousel Routes missing");
+}
+
+// ORDER ROUTES (NEW ADDED HERE) 👇
+try {
+    const orderRoutes = require('./routes/orderRoutes');
+    app.use('/api/orders', orderRoutes);
+    console.log("✅ Order Routes Loaded");
+} catch (error) {
+    console.error("⚠️ Warning: Order Routes missing");
+}
+
 // Admin Controller Direct Functions (Legacy Support)
 try {
     const authController = require('./controllers/authController');

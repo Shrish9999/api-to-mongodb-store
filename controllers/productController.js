@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const axios = require('axios'); // <-- Yeh line zaroori hai data fetch karne ke liye
 
 // 1. Get All Products
 exports.getAllProducts = async (req, res) => {
@@ -86,5 +87,46 @@ exports.getDashboardStats = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// 6. Seed Products (NEW API FEATURE: Fetch 194 items & Reset DB)
+exports.seedProducts = async (req, res) => {
+    try {
+        console.log("Fetching data from DummyJSON...");
+        // API se data mangwana
+        const response = await axios.get('https://dummyjson.com/products?limit=194');
+        const apiData = response.data.products;
+
+        console.log("Deleting old data...");
+        // Purana data delete karna
+        await Product.deleteMany({});
+
+        // Naye data ko map karna taaki schema ke saath fit baithe
+        const productDocs = apiData.map(item => ({
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            price: item.price,
+            category: item.category,
+            thumbnail: item.thumbnail,
+            rating: item.rating,
+            stock: item.stock
+        }));
+
+        console.log("Inserting new data...");
+        // Naya data save karna
+        await Product.insertMany(productDocs);
+
+        console.log("Data Imported Successfully!");
+        res.status(201).json({ 
+            message: 'Database Seeded Successfully! Old data cleared.', 
+            count: productDocs.length, 
+            products: productDocs 
+        });
+
+    } catch (error) {
+        console.error("Error seeding data:", error);
+        res.status(500).json({ message: "Server Error during Seeding", error: error.message });
     }
 };
