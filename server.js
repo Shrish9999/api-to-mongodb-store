@@ -68,6 +68,16 @@ try {
     console.error("⚠️ Warning: Auth Routes missing");
 }
 
+// 👇 NEW: USER ROUTES (Profile Update ke liye)
+try {
+    const userRoutes = require('./routes/userRoutes');
+    // Isse URL banega: /api/users/profile
+    app.use('/api/users', userRoutes);
+    console.log("✅ User Routes (Profile) Loaded");
+} catch (error) {
+    console.error("⚠️ Warning: User Routes missing");
+}
+
 // OFFER ROUTES
 try {
     const offerRoutes = require('./routes/offerRoutes');
@@ -86,7 +96,7 @@ try {
     console.error("⚠️ Warning: Carousel Routes missing");
 }
 
-// ORDER ROUTES (NEW ADDED HERE) 👇
+// ORDER ROUTES
 try {
     const orderRoutes = require('./routes/orderRoutes');
     app.use('/api/orders', orderRoutes);

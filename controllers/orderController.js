@@ -1,6 +1,8 @@
 const Order = require('../models/orderModel');
 
 // @desc    Create new order
+// @route   POST /api/orders
+// @access  Private
 const addOrderItems = async (req, res) => {
   try {
     const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
@@ -23,7 +25,9 @@ const addOrderItems = async (req, res) => {
   }
 };
 
-// @desc    Get all orders
+// @desc    Get all orders (Admin)
+// @route   GET /api/orders
+// @access  Private/Admin
 const getOrders = async (req, res) => {
   try {
     const orders = await Order.find({}).populate('user', 'id name email').sort({ createdAt: -1 });
@@ -33,7 +37,23 @@ const getOrders = async (req, res) => {
   }
 };
 
+// 👇 NEW: Get Logged In User Orders (Customer)
+// @desc    Get logged in user orders
+// @route   GET /api/orders/myorders
+// @access  Private
+const getMyOrders = async (req, res) => {
+  try {
+    // req.user._id middleware se aata hai (Login user ka ID)
+    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Update order status
+// @route   PUT /api/orders/:id
+// @access  Private/Admin
 const updateOrderStatus = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -55,7 +75,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// 👇 NEW: Delete Order
 // @desc    Delete order
 // @route   DELETE /api/orders/:id
 // @access  Private/Admin
@@ -74,5 +93,11 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-// Export mein 'deleteOrder' add kar diya 👇
-module.exports = { addOrderItems, getOrders, updateOrderStatus, deleteOrder };
+// Export mein 'getMyOrders' add kar diya hai 👇
+module.exports = { 
+    addOrderItems, 
+    getOrders, 
+    updateOrderStatus, 
+    deleteOrder, 
+    getMyOrders 
+};
