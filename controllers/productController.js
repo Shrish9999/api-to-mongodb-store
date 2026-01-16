@@ -1,12 +1,15 @@
 const Product = require('../models/productModel');
-const axios = require('axios'); // <-- Yeh line zaroori hai data fetch karne ke liye
+const Offer = require('../models/offerModel'); // <--- YEH UPDATE KIYA HAI (Zaroori tha)
+const axios = require('axios'); 
 
-// 1. Get All Products
+// 1. Get All Products (Updated: Added populate logic)
 exports.getAllProducts = async (req, res) => {
     try {
-        const allProducts = await Product.find(); 
+        // Ab Offer model import hai, toh populate error nahi dega
+        const allProducts = await Product.find().populate('offer'); 
         res.status(200).json(allProducts);
     } catch (error) {
+        console.error("Get Products Error:", error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -26,14 +29,15 @@ exports.addProduct = async (req, res) => {
     }
 };
 
-// 3. Update Product
+// 3. Update Product (Updated: Added populate logic)
 exports.updateProduct = async (req, res) => {
     try {
         const updateData = { ...req.body };
         if (req.file) {
             updateData.thumbnail = `http://localhost:5000/uploads/${req.file.filename}`;
         }
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        // Update hone ke baad full offer details return karega
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true }).populate('offer');
         res.status(200).json(updatedProduct);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -50,7 +54,7 @@ exports.deleteProduct = async (req, res) => {
     }
 };
 
-// 5. Advanced Dashboard Stats (Updated Feature)
+// 5. Advanced Dashboard Stats
 exports.getDashboardStats = async (req, res) => {
     try {
         // Category wise counts
@@ -69,7 +73,7 @@ exports.getDashboardStats = async (req, res) => {
             { $group: { _id: null, totalValue: { $sum: { $multiply: ["$price", "$stock"] } } } }
         ]);
 
-        // SMART MOVE: Fetching Low Stock & Recent Items for a Professional Look
+        // Low Stock & Recent Items
         const lowStockItems = await Product.find({ stock: { $lt: 20 } }).limit(5).select('title stock thumbnail');
         const recentActivity = await Product.find().sort({ _id: -1 }).limit(5).select('title category createdAt');
 
@@ -90,7 +94,7 @@ exports.getDashboardStats = async (req, res) => {
     }
 };
 
-// 6. Seed Products (NEW API FEATURE: Fetch 194 items & Reset DB)
+// 6. Seed Products
 exports.seedProducts = async (req, res) => {
     try {
         console.log("Fetching data from DummyJSON...");
